@@ -1,8 +1,7 @@
 import { App } from 'uWebSockets.js'
 import { Server } from 'socket.io'
 import { createAdapter } from '@socket.io/redis-adapter'
-import { createClient } from 'redis'
-import { logger as log, configure as cfg } from './utils'
+import { logger as log, configure as cfg, pubClient, subClient, connectRedis } from './utils'
 
 const app = App()
 const io = new Server({
@@ -11,11 +10,13 @@ const io = new Server({
   },
 })
 
-const pubClient = createClient({ url: cfg.redisUrl })
-const subClient = pubClient.duplicate()
-
 io.adapter(createAdapter(pubClient, subClient))
 io.attachApp(app)
+
+connectRedis().catch((err) => {
+  // Redis接続エラーの処理
+  log.error(err)
+})
 
 // socket.io global events
 
@@ -61,33 +62,6 @@ app.get('/helth', async (res) => {
     })
   )
 })
-
-// FIXME: redis connection error handling
-const redisConnect = Promise.all([
-  pubClient
-    .connect()
-    .then(() => log.debug('pubClient ready'))
-    .catch((err) => {
-      log.error(err)
-      throw err
-    }),
-  subClient
-    .connect()
-    .then(() => log.debug('subClient ready'))
-    .catch((err) => {
-      log.error(err)
-      throw err
-    }),
-])
-
-// Redis Connection
-redisConnect
-  .then(() => {
-    log.debug('Both Redis clients connected successfully')
-  })
-  .catch((err) => {
-    log.error('Redis connection error:', err)
-  })
 
 app.listen(cfg.port as number, async (token) => {
   // flush all redis data
