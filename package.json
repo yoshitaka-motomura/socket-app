@@ -1,0 +1,44 @@
+{
+  "name": "socketio-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "nodemon",
+    "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}' && prettier --write 'src/**/*.{ts,tsx}'"
+  },
+  "keywords": [],
+  "private": true,
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@socket.io/redis-adapter": "^8.2.1",
+    "dotenv": "^16.3.1",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1",
+    "redis": "^4.6.12",
+    "save-dev": "^0.0.1-security",
+    "socket.io": "^4.7.4",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.39.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.2",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "nodemon": "^3.0.2",
+    "prettier": "^3.2.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 120,
+    "tabWidth": 2
+  }
+}
