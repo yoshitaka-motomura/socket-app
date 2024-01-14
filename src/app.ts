@@ -36,19 +36,10 @@ ns.on('connection', (socket) => {
       await pubClient.hSet(nsKey, id, JSON.stringify(request))
       const data = await pubClient.hGetAll(nsKey)
       const users = Object.keys(data).map((key) => JSON.parse(data[key]))
-      socket.emit('users', { message: 'participate', users })
+      ns.emit('ns-users', { message: 'participate', users })
     } catch (err) {
       log.error(err)
     }
-  })
-
-  // ping event
-  socket.on('ping', () => {
-    ns.to(id).emit('ping', {
-      message: 'pong',
-      socketId: id,
-      date: new Date().toISOString(),
-    })
   })
 
   // disconnect event
@@ -56,17 +47,9 @@ ns.on('connection', (socket) => {
     await pubClient.hDel(`stream:${namespace.name}`, id)
     const data = await pubClient.hGetAll(`stream:${namespace.name}`)
     const users = Object.keys(data).map((key) => JSON.parse(data[key]))
-    socket.emit('users', { message: 'disconnect', users })
+    ns.emit('ns-users', { message: 'disconnect', users })
   })
 })
-
-Promise.all([pubClient.connect(), subClient.connect()])
-  .then(() => {
-    log.debug('Redis connected')
-  })
-  .catch((err) => {
-    log.fatal(err)
-  })
 
 // uWebSockets.js global events
 app.get('/helth', async (res) => {
@@ -78,6 +61,33 @@ app.get('/helth', async (res) => {
     })
   )
 })
+
+// FIXME: redis connection error handling
+const redisConnect = Promise.all([
+  pubClient
+    .connect()
+    .then(() => log.debug('pubClient ready'))
+    .catch((err) => {
+      log.error(err)
+      throw err
+    }),
+  subClient
+    .connect()
+    .then(() => log.debug('subClient ready'))
+    .catch((err) => {
+      log.error(err)
+      throw err
+    }),
+])
+
+// Redis Connection
+redisConnect
+  .then(() => {
+    log.debug('Both Redis clients connected successfully')
+  })
+  .catch((err) => {
+    log.error('Redis connection error:', err)
+  })
 
 app.listen(cfg.port as number, async (token) => {
   // flush all redis data

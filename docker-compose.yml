@@ -27,11 +27,11 @@ services:
       - TZ=Asia/Tokyo
     volumes:
       - ./data/redis:/data
-  # redisinsight:
-  #   image: redislabs/redisinsight:latest
-  #   ports:
-  #     - '8001:8001'
-  #   volumes:
-  #     - ./data/redisinsight:/db
-  #   depends_on:
-  #     - redis
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./data/redisinsight:/db
+    depends_on:
+      - redis
