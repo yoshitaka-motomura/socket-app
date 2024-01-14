@@ -16,6 +16,8 @@ const subClient = pubClient.duplicate()
 io.adapter(createAdapter(pubClient, subClient))
 io.attachApp(app)
 
+// socket.io global events
+
 const ns = io.of(/ns-\w+$/)
 
 /**
