@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "nodemon",
-    "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}' && prettier --write 'src/**/*.{ts,tsx}'"
+    "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}' && prettier --write 'src/**/*.{ts,tsx}'",
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "private": true,
