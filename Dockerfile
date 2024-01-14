@@ -1,5 +1,7 @@
-
 FROM node:20-slim as dependencies
+LABEL org.opencontainers.image.source=https://github.com/yoshitaka-motomura/socket-app
+LABEL org.opencontainers.image.description="socket.io app multi arch docker image"
+LABEL org.opencontainers.image.licenses=MIT
 
 # Create app directory
 WORKDIR /usr/src/app
