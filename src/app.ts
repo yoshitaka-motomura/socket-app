@@ -1,7 +1,7 @@
 import { App } from 'uWebSockets.js'
 import { Server } from 'socket.io'
 import { createAdapter } from '@socket.io/redis-adapter'
-import { logger as log, configure as cfg, pubClient, subClient, connectRedis } from './utils'
+import { logger as log, configure as cfg, pubClient, subClient, connectRedis, Manage } from './utils'
 
 const app = App()
 const io = new Server({
@@ -9,6 +9,7 @@ const io = new Server({
     origin: '*',
   },
 })
+const manage = new Manage().singleton()
 
 io.adapter(createAdapter(pubClient, subClient))
 io.attachApp(app)
@@ -66,7 +67,7 @@ app.get('/helth', async (res) => {
 app.listen(cfg.port as number, async (token) => {
   // flush all redis data
   log.info('app listening on port 3000')
-  await pubClient.flushAll()
+  await manage.flush()
   if (!token) {
     log.error('Failed to listen to port 3000.')
   }

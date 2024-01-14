@@ -22,4 +22,29 @@ const connectRedis = async () => {
   }
 }
 
-export { pubClient, subClient, connectRedis }
+interface RedisManage {
+  clients(): void
+  flush(): Promise<void>
+  setItem(key: string, value: string): Promise<void>
+  fetchItems(): Promise<void>
+  deleteItem(): Promise<void>
+  singleton(): RedisManage
+}
+
+class Manage implements RedisManage {
+  constructor() {}
+  public clients() {}
+  public async flush() {
+    await pubClient.flushAll()
+  }
+  public async setItem(key: string, value: string) {
+    await pubClient.set(key, value)
+  }
+  public async fetchItems() {}
+  public async deleteItem() {}
+  public singleton() {
+    return this
+  }
+}
+
+export { pubClient, subClient, connectRedis, Manage }
