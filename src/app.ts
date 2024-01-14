@@ -10,6 +10,7 @@ const io = new Server({
     origin: '*',
   },
 })
+
 const pubClient = createClient({ url: cfg.redisUrl })
 const subClient = pubClient.duplicate()
 
@@ -64,8 +65,20 @@ Promise.all([pubClient.connect(), subClient.connect()])
     log.debug('Redis connected')
   })
   .catch((err) => {
-    log.error(err)
+    log.fatal(err)
   })
+
+// uWebSockets.js global events
+app.get('/helth', async (res) => {
+  res.writeHeader('Content-Type', 'application/json')
+  res.writeStatus('200').end(
+    JSON.stringify({
+      status: 'running',
+      date: new Date().toUTCString(),
+    })
+  )
+})
+
 app.listen(cfg.port as number, async (token) => {
   // flush all redis data
   log.info('app listening on port 3000')
