@@ -9,7 +9,7 @@ const io = new Server({
     origin: '*',
   },
 })
-const manage = new Manage().singleton()
+const manage = Manage.getInstance()
 
 io.adapter(createAdapter(pubClient, subClient))
 io.attachApp(app)

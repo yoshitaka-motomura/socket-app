@@ -26,13 +26,19 @@ interface RedisManage {
   clients(): void
   flush(): Promise<void>
   setItem(key: string, value: string): Promise<void>
-  fetchItems(): Promise<void>
+  fetchItems(ns: string): Promise<void>
   deleteItem(): Promise<void>
-  singleton(): RedisManage
 }
 
 class Manage implements RedisManage {
-  constructor() {}
+  private static instance: Manage
+  constructor() {
+    console.log('Manage constructor')
+    this.connection()
+  }
+  private connection() {
+    console.log('Manage activated')
+  }
   public clients() {}
   public async flush() {
     await pubClient.flushAll()
@@ -40,10 +46,15 @@ class Manage implements RedisManage {
   public async setItem(key: string, value: string) {
     await pubClient.set(key, value)
   }
-  public async fetchItems() {}
+  public async fetchItems(ns: string) {
+    console.log(ns)
+  }
   public async deleteItem() {}
-  public singleton() {
-    return this
+  static getInstance() {
+    if (!Manage.instance) {
+      Manage.instance = new Manage()
+    }
+    return Manage.instance
   }
 }
 
